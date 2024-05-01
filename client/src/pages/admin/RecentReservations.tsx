@@ -43,6 +43,8 @@ const RecentReservations = () => {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [isViewing, setIsViewing] = useState(false);
+  const [sortField, setSortField] = useState("ReservacionID");
+  const [sortOrder, setSortOrder] = useState("ASC");
 
   const estadoOptions = ["Pendiente", "Confirmado", "Cancelado", "Completado"];
   const salaOptions = Object.values(idToSalasMap);
@@ -74,6 +76,25 @@ const RecentReservations = () => {
 
     fetchReservations();
   }, []);
+
+  // Ordenar las reservaciones por el campo especificado, en descendente o ascendente
+  const sortReservations = (field: string) => {
+    setSortField((prevField) => {
+      const newOrder =
+        prevField === field && sortOrder === "ASC" ? "DESC" : "ASC";
+      setSortOrder(newOrder);
+
+      setReservations((prevReservations) => {
+        return [...prevReservations].sort((a, b) => {
+          if (a[field] < b[field]) return newOrder === "ASC" ? -1 : 1;
+          if (a[field] > b[field]) return newOrder === "ASC" ? 1 : -1;
+          return 0;
+        });
+      });
+
+      return field;
+    });
+  };
 
   const handleView = (reservacionID: number) => {
     setCurrentReservation(
@@ -143,7 +164,7 @@ const RecentReservations = () => {
             (res: Reservation) => res.ReservacionID !== reservacionID,
           ),
         );
-        alert("Reservation marcada como eliminada");
+        alert("Reservacion marcada como eliminada");
       } catch (error) {
         console.error("Error marcando reservacion como eliminada: ", error);
         alert("Error al intentar marcar la reservacion como eliminada");
@@ -195,16 +216,28 @@ const RecentReservations = () => {
           <table className="min-w-full divide-y divide-gray-200 bg-white">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
+                <th
+                  onClick={() => sortReservations("ReservacionID")}
+                  className="cursor-pointer px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600 hover:bg-gray-100 hover:shadow"
+                >
                   ID
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
+                <th
+                  onClick={() => sortReservations("Matricula")}
+                  className="cursor-pointer px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600 hover:bg-gray-100 hover:shadow"
+                >
                   Matricula
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
+                <th
+                  onClick={() => sortReservations("HoraInicio")}
+                  className="cursor-pointer px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600 hover:bg-gray-100 hover:shadow"
+                >
                   Hora Inicio
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
+                <th
+                  className="cursor-pointer px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600 hover:bg-gray-100 hover:shadow"
+                  onClick={() => sortReservations("HoraFin")}
+                >
                   Hora Fin
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
