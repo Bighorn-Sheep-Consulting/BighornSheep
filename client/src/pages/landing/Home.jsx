@@ -19,10 +19,11 @@ export default function Home() {
       <AiCTA />
       <Contacto />
       <FloatingWhatsApp
-        phoneNumber="+528119001483"
-        accountName="Wall-E"
+        phoneNumber="+528153502632"
+        accountName="DREAM Lab Assistant"
         avatar={avatar}
         chatMessage="¡Bienvenido al DREAM Lab! Te gustaría hacer una reservacion?"
+        statusMessage=""
       />
     </div>
   );
