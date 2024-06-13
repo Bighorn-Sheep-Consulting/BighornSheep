@@ -144,5 +144,79 @@ router.post("/reservation", aiRequestController.createReservation);
  */
 router.get("/reservations/:Matricula", aiRequestController.getUpcomingReservations);
 
+/**
+ * @swagger
+ * /ai/checkNumber:
+ *   get:
+ *     summary: Verificar si un número de teléfono existe en la base de datos
+ *     description: Verifica si un número de teléfono específico está registrado en la base de datos.
+ *     parameters:
+ *       - in: query
+ *         name: Telefono
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Número de teléfono a verificar.
+ *     responses:
+ *       200:
+ *         description: Resultado de la verificación del número de teléfono.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   Telefono:
+ *                     type: string
+ *                     description: Número de teléfono del usuario.
+ *                   NombreUsuario:
+ *                     type: string
+ *                     description: Nombre del usuario.
+ *       500:
+ *         description: Error del servidor o problema de conectividad con la base de datos.
+ *       400:
+ *         description: Faltan campos requeridos.
+ *     tags:
+ *       - Usuarios
+ */
+router.get("/checkNumber", aiRequestController.checkNumberInDB);
 
-module.exports = router;
+/**
+ * @swagger
+ * /ai/matricula:
+ *   get:
+ *     summary: Buscar matrícula por número de teléfono
+ *     description: Busca la matrícula asociada a un número de teléfono específico en la base de datos.
+ *     parameters:
+ *       - in: query
+ *         name: Telefono
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Número de teléfono para buscar la matrícula.
+ *     responses:
+ *       200:
+ *         description: Resultado de la búsqueda de la matrícula.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 existe:
+ *                   type: boolean
+ *                   description: Indica si el número de teléfono existe en la base de datos.
+ *                 matricula:
+ *                   type: string
+ *                   description: Matrícula asociada al número de teléfono.
+ *       400:
+ *         description: Faltan campos requeridos.
+ *       500:
+ *         description: Error del servidor o problema de conectividad con la base de datos.
+ *     tags:
+ *       - Matrículas
+ */
+router.get("/matricula", aiRequestController.findMatriculaWithNumber);
+
+
+module.exports = router

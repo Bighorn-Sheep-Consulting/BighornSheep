@@ -126,6 +126,74 @@ module.exports = {
             res.status(500).send({ message: "Error with DB", error: err });
         }
     },
+    checkNumberInDB: async (req, res) => {
+        const { Telefono } = req.query;
+    
+        // Validate required fields
+        if (!Telefono) {
+            return res.status(400).send({
+                message: "Missing required field: Telefono"
+            });
+        }
+    
+        try {
+            let pool = await sql.connect(config);
+            let result = await pool
+                .request()
+                .input("Telefono", sql.VarChar(20), Telefono)
+                .output("Existe", sql.Bit)
+                .execute("sp_BuscarTelefonoEnUsuario");
+    
+            // Get the output value
+            let result2 = await pool
+                .request()
+                .input("Telefono", sql.VarChar(20), Telefono)
+                .output("Matricula", sql.VarChar(10))
+                .output("Existe", sql.Bit)
+                .execute("sp_BuscarMatriculaPorTelefono");
+    
+            // Get the output value
+            const existe = result.output.Existe;
+            const matricula = result2.output.Matricula;
+    
+            res.status(200).send({ existe , matricula});
+        } catch (err) {
+            console.error("Error occurred while revising the phone number in the DB");
+            console.error(err);
+            res.status(500).send({ message: "Error with DB", error: err });
+        }
+    },
+    findMatriculaWithNumber: async (req, res) => {
+        const { Telefono } = req.query;
+    
+        // Validate required fields
+        if (!Telefono) {
+            return res.status(400).send({
+                message: "Missing required field: Telefono"
+            });
+        }
+    
+        try {
+            let pool = await sql.connect(config);
+            let result = await pool
+                .request()
+                .input("Telefono", sql.VarChar(20), Telefono)
+                .output("Matricula", sql.VarChar(10))
+                .output("Existe", sql.Bit)
+                .execute("sp_BuscarMatriculaPorTelefono");
+    
+            // Get the output value
+            const existe = result.output.Existe;
+            const matricula = result.output.Matricula;
+
+    
+            res.status(200).send({ existe , matricula});
+        } catch (err) {
+            console.error("Error occurred while revising the phone number in the DB");
+            console.error(err);
+            res.status(500).send({ message: "Error with DB", error: err });
+        }
+    },
 
     // find possible reservations around a future date
 
