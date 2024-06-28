@@ -135,7 +135,7 @@ function ReservationCard({ reservacion, sala }) {
                           className="cursor-pointer rounded-md bg-blue text-center text-lg font-bold text-white"
                           onClick={handleFlip}
                         >
-                          . . .
+                          Ver más
                         </p>
                       ) : (
                         item.Nombre +
